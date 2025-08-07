@@ -1,0 +1,867 @@
+/**
+ * Link2Investors Live Chat Styles
+ * Modern, responsive chat interface
+ */
+
+/* ==========================================================================
+   Base Chat Interface
+   ========================================================================== */
+
+.l2i-chat-interface {
+    display: flex;
+    height: 600px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.l2i-chat-sidebar {
+    width: 320px;
+    background: #f8f9fa;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+.l2i-chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+}
+
+/* ==========================================================================
+   Chat Header
+   ========================================================================== */
+
+.l2i-chat-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.l2i-chat-sidebar .l2i-chat-header {
+    background: #f8f9fa;
+}
+
+.l2i-chat-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.l2i-chat-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.l2i-chat-user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.l2i-chat-user-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.l2i-chat-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ==========================================================================
+   Unread Count Badge
+   ========================================================================== */
+
+.l2i-unread-count-display {
+    display: flex;
+    align-items: center;
+}
+
+.l2i-unread-badge {
+    background: #e74c3c;
+    color: white;
+    border-radius: 12px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* ==========================================================================
+   Conversation Search
+   ========================================================================== */
+
+.l2i-conversation-search {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.l2i-conversation-search input {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 14px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.l2i-conversation-search input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* ==========================================================================
+   Conversation List
+   ========================================================================== */
+
+.l2i-conversation-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.l2i-conversations {
+    display: flex;
+    flex-direction: column;
+}
+
+.l2i-conversation-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.l2i-conversation-item:hover {
+    background: #ffffff;
+}
+
+.l2i-conversation-item.has-unread {
+    background: #f8f9ff;
+    border-left: 4px solid #3498db;
+}
+
+.l2i-conversation-item.active {
+    background: #3498db;
+    color: white;
+}
+
+.l2i-conversation-item.active h4,
+.l2i-conversation-item.active p {
+    color: white;
+}
+
+.l2i-conversation-avatar {
+    position: relative;
+    margin-right: 12px;
+}
+
+.l2i-conversation-avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.l2i-online-indicator {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.l2i-online-indicator.online {
+    background: #27ae60;
+}
+
+.l2i-online-indicator.offline {
+    background: #95a5a6;
+}
+
+.l2i-conversation-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.l2i-conversation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.l2i-conversation-name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+    truncate: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.l2i-conversation-time {
+    font-size: 12px;
+    color: #7f8c8d;
+    flex-shrink: 0;
+}
+
+.l2i-conversation-preview {
+    margin: 0;
+    font-size: 13px;
+    color: #7f8c8d;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.l2i-unread-indicator {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: #e74c3c;
+    border-radius: 50%;
+}
+
+.l2i-no-conversations {
+    padding: 40px 20px;
+    text-align: center;
+    color: #7f8c8d;
+}
+
+/* ==========================================================================
+   Chat Messages
+   ========================================================================== */
+
+.l2i-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #f8f9fa;
+}
+
+.l2i-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    max-width: 70%;
+}
+
+.l2i-message.own-message {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.l2i-message-avatar img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.l2i-message-content {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 12px 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.l2i-message.own-message .l2i-message-content {
+    background: #3498db;
+    color: white;
+}
+
+.l2i-message-text {
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.l2i-message-time {
+    font-size: 11px;
+    color: #7f8c8d;
+    margin-top: 6px;
+    text-align: right;
+}
+
+.l2i-message.own-message .l2i-message-time {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ==========================================================================
+   Typing Indicator
+   ========================================================================== */
+
+.l2i-typing-indicator {
+    padding: 0 20px 10px;
+    font-size: 13px;
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.l2i-typing-text::after {
+    content: '...';
+    animation: l2i-typing-dots 1.5s infinite;
+}
+
+@keyframes l2i-typing-dots {
+    0%, 60% { content: '...'; }
+    20% { content: '.'; }
+    40% { content: '..'; }
+}
+
+/* ==========================================================================
+   Chat Input
+   ========================================================================== */
+
+.l2i-chat-input {
+    padding: 20px;
+    border-top: 1px solid #e0e0e0;
+    background: #ffffff;
+}
+
+.l2i-chat-input form {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.l2i-file-btn {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+}
+
+.l2i-file-btn:hover {
+    background: #e9ecef;
+}
+
+#l2i-message-input {
+    flex: 1;
+    min-height: 40px;
+    max-height: 120px;
+    padding: 10px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: none;
+    background: #f8f9fa;
+    transition: all 0.2s ease;
+}
+
+#l2i-message-input:focus {
+    outline: none;
+    border-color: #3498db;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.l2i-send-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+
+.l2i-send-btn:hover {
+    background: #2980b9;
+    transform: scale(1.05);
+}
+
+.l2i-send-btn:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ==========================================================================
+   Zoom Integration
+   ========================================================================== */
+
+.l2i-zoom-btn {
+    background: #0e71eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.l2i-zoom-btn:hover {
+    background: #0b5cbb;
+}
+
+.l2i-zoom-invite-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+}
+
+.l2i-zoom-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.l2i-zoom-content h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.l2i-zoom-content p {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.l2i-zoom-join-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.l2i-zoom-join-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+/* ==========================================================================
+   File Messages
+   ========================================================================== */
+
+.l2i-file-message {
+    max-width: 100%;
+}
+
+.l2i-file-attachment {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+.l2i-message.own-message .l2i-file-attachment {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.l2i-file-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.l2i-file-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.l2i-file-name {
+    display: block;
+    font-weight: 600;
+    color: inherit;
+    text-decoration: none;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.l2i-file-name:hover {
+    text-decoration: underline;
+}
+
+.l2i-file-size {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* ==========================================================================
+   Online Status
+   ========================================================================== */
+
+.l2i-online-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+}
+
+.l2i-status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.l2i-online-status.online .l2i-status-indicator {
+    background: #27ae60;
+}
+
+.l2i-online-status.offline .l2i-status-indicator {
+    background: #95a5a6;
+}
+
+.l2i-status-text {
+    font-weight: 500;
+}
+
+.l2i-online-status.online .l2i-status-text {
+    color: #27ae60;
+}
+
+.l2i-online-status.offline .l2i-status-text {
+    color: #95a5a6;
+}
+
+/* ==========================================================================
+   Start Chat Button
+   ========================================================================== */
+
+.l2i-start-chat-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.l2i-start-chat-btn:hover {
+    background: #2980b9;
+    text-decoration: none;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.l2i-start-chat-btn.disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ==========================================================================
+   Welcome Screen
+   ========================================================================== */
+
+.l2i-chat-welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: #7f8c8d;
+    padding: 40px;
+}
+
+.l2i-chat-welcome h3 {
+    margin: 0 0 16px 0;
+    font-size: 24px;
+    font-weight: 300;
+    color: #2c3e50;
+}
+
+.l2i-chat-welcome p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   Login Required
+   ========================================================================== */
+
+.l2i-chat-login-required {
+    padding: 40px;
+    text-align: center;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.l2i-chat-login-required h3 {
+    margin: 0 0 16px 0;
+    color: #2c3e50;
+}
+
+.l2i-chat-login-required p {
+    margin: 0 0 20px 0;
+    color: #7f8c8d;
+}
+
+.l2i-chat-login-required .button {
+    background: #3498db;
+    color: white;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.l2i-chat-login-required .button:hover {
+    background: #2980b9;
+    text-decoration: none;
+    color: white;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .l2i-chat-interface {
+        flex-direction: column;
+        height: 100vh;
+        border-radius: 0;
+        max-width: none;
+    }
+    
+    .l2i-chat-sidebar {
+        width: 100%;
+        height: 200px;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .l2i-conversation-item {
+        padding: 12px 16px;
+    }
+    
+    .l2i-conversation-avatar img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .l2i-chat-messages {
+        padding: 16px;
+    }
+    
+    .l2i-message {
+        max-width: 85%;
+    }
+    
+    .l2i-chat-input {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .l2i-chat-header {
+        padding: 12px 16px;
+    }
+    
+    .l2i-conversation-search {
+        padding: 12px 16px;
+    }
+    
+    .l2i-conversation-item {
+        padding: 10px 16px;
+    }
+    
+    .l2i-chat-messages {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .l2i-message-content {
+        padding: 10px 14px;
+    }
+    
+    .l2i-chat-input form {
+        gap: 8px;
+    }
+    
+    .l2i-file-btn,
+    .l2i-send-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    #l2i-message-input {
+        min-height: 36px;
+        padding: 8px 14px;
+    }
+}
+
+/* ==========================================================================
+   Accessibility
+   ========================================================================== */
+
+.l2i-chat-interface *:focus {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+}
+
+.l2i-conversation-item:focus {
+    outline: 2px solid #3498db;
+    outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    .l2i-chat-interface {
+        background: #2c3e50;
+        border-color: #34495e;
+    }
+    
+    .l2i-chat-sidebar {
+        background: #34495e;
+        border-color: #4a5f7a;
+    }
+    
+    .l2i-chat-main {
+        background: #2c3e50;
+    }
+    
+    .l2i-chat-header {
+        background: #2c3e50;
+        border-color: #4a5f7a;
+        color: white;
+    }
+    
+    .l2i-chat-sidebar .l2i-chat-header {
+        background: #34495e;
+    }
+    
+    .l2i-chat-header h3,
+    .l2i-chat-user-info h4,
+    .l2i-conversation-name {
+        color: white;
+    }
+    
+    .l2i-conversation-search input {
+        background: #2c3e50;
+        border-color: #4a5f7a;
+        color: white;
+    }
+    
+    .l2i-conversation-search input::placeholder {
+        color: #7f8c8d;
+    }
+    
+    .l2i-conversation-item {
+        border-color: #4a5f7a;
+    }
+    
+    .l2i-conversation-item:hover {
+        background: #2c3e50;
+    }
+    
+    .l2i-chat-messages {
+        background: #2c3e50;
+    }
+    
+    .l2i-message-content {
+        background: #34495e;
+        color: white;
+    }
+    
+    .l2i-chat-input {
+        background: #2c3e50;
+        border-color: #4a5f7a;
+    }
+    
+    #l2i-message-input {
+        background: #34495e;
+        border-color: #4a5f7a;
+        color: white;
+    }
+    
+    #l2i-message-input::placeholder {
+        color: #7f8c8d;
+    }
+    
+    .l2i-file-btn {
+        background: #34495e;
+        border-color: #4a5f7a;
+        color: white;
+    }
+    
+    .l2i-chat-welcome {
+        color: #bdc3c7;
+    }
+    
+    .l2i-chat-welcome h3 {
+        color: white;
+    }
+}
