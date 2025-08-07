@@ -88,14 +88,17 @@ class L2I_LiveChat_Manager {
             true
         );
         
-        // File upload script
-        wp_enqueue_script(
-            'l2i-livechat-upload',
-            L2I_LIVECHAT_PLUGIN_URL . 'assets/js/file-upload.js',
-            array('jquery'),
-            L2I_LIVECHAT_VERSION,
-            true
-        );
+        // File upload script (only if file exists)
+        $file_upload_js = L2I_LIVECHAT_PLUGIN_DIR . 'assets/js/file-upload.js';
+        if (file_exists($file_upload_js)) {
+            wp_enqueue_script(
+                'l2i-livechat-upload',
+                L2I_LIVECHAT_PLUGIN_URL . 'assets/js/file-upload.js',
+                array('jquery'),
+                L2I_LIVECHAT_VERSION,
+                true
+            );
+        }
         
         // Localize script for AJAX
         wp_localize_script('l2i-livechat-script', 'l2i_chat', array(
@@ -127,25 +130,34 @@ class L2I_LiveChat_Manager {
             return;
         }
         
-        wp_enqueue_script(
-            'l2i-livechat-admin',
-            L2I_LIVECHAT_PLUGIN_URL . 'assets/js/admin.js',
-            array('jquery', 'wp-util'),
-            L2I_LIVECHAT_VERSION,
-            true
-        );
+        // Admin JavaScript (only if file exists)
+        $admin_js = L2I_LIVECHAT_PLUGIN_DIR . 'assets/js/admin.js';
+        if (file_exists($admin_js)) {
+            wp_enqueue_script(
+                'l2i-livechat-admin',
+                L2I_LIVECHAT_PLUGIN_URL . 'assets/js/admin.js',
+                array('jquery', 'wp-util'),
+                L2I_LIVECHAT_VERSION,
+                true
+            );
+        }
         
-        wp_enqueue_style(
-            'l2i-livechat-admin',
-            L2I_LIVECHAT_PLUGIN_URL . 'assets/css/admin.css',
-            array(),
-            L2I_LIVECHAT_VERSION
-        );
+        // Admin CSS (only if file exists)
+        $admin_css = L2I_LIVECHAT_PLUGIN_DIR . 'assets/css/admin.css';
+        if (file_exists($admin_css)) {
+            wp_enqueue_style(
+                'l2i-livechat-admin',
+                L2I_LIVECHAT_PLUGIN_URL . 'assets/css/admin.css',
+                array(),
+                L2I_LIVECHAT_VERSION
+            );
+        }
     }
     
     public function activate() {
         // Create database tables
-        L2I_Chat_Database::create_tables();
+        $db = L2I_Chat_Database::get_instance();
+        $db->create_tables();
         
         // Create messaging page
         $this->create_messaging_page();
