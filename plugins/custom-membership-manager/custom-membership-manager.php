@@ -158,3 +158,37 @@ class L2I_Membership_Manager {
 
 // Initialize the plugin
 L2I_Membership_Manager::get_instance();
+
+// Helper functions for external use
+function l2i_get_user_credits($user_id, $credit_type = 'all') {
+    $credits = L2I_Credits::get_instance();
+    return $credits ? $credits->get_user_credits($user_id, $credit_type) : array();
+}
+
+function l2i_use_credits($user_id, $credit_type, $amount, $description = '') {
+    $credits = L2I_Credits::get_instance();
+    return $credits ? $credits->use_credits($user_id, $credit_type, $amount, $description) : false;
+}
+
+function l2i_add_credits($user_id, $credit_type, $amount, $description = '') {
+    $credits = L2I_Credits::get_instance();
+    return $credits ? $credits->add_credits($user_id, $credit_type, $amount, $description) : false;
+}
+
+function l2i_get_user_tier($user_id) {
+    $roles = L2I_Roles::get_instance();
+    return $roles ? $roles->get_user_membership_role($user_id) : '';
+}
+
+// Link2Investors specific helper functions (integrated from standalone plugin)
+function l2i_is_restricted_member($user_id = null) {
+    $restrictions = L2I_Restrictions::get_instance();
+    return $restrictions ? $restrictions->l2i_is_restricted_member($user_id) : false;
+}
+
+function l2i_clear_restriction_cache($user_id) {
+    $restrictions = L2I_Restrictions::get_instance();
+    if ($restrictions) {
+        $restrictions->l2i_clear_restriction_cache($user_id);
+    }
+}

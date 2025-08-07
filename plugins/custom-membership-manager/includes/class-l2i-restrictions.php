@@ -67,6 +67,18 @@ class L2I_Restrictions {
         
         // API restrictions
         add_filter('rest_authentication_errors', array($this, 'restrict_api_access'), 10, 1);
+        
+        // Link2Investors specific restrictions (integrated from standalone plugin)
+        add_filter('ProjectTheme_is_it_allowed_place_bids', array($this, 'l2i_restrict_bidding_and_posting'), 10);
+        add_filter('ProjectTheme_is_it_allowed_post_projects', array($this, 'l2i_restrict_bidding_and_posting'), 10);
+        
+        // AJAX action restrictions for Link2Investors features
+        add_action('wp_ajax_link2investors_create_zoom_meeting', array($this, 'l2i_restrict_action_callback'), 1);
+        add_action('wp_ajax_pt_send_connection_request', array($this, 'l2i_restrict_action_callback'), 1);
+        add_action('wp_ajax_send_regular_chat_message', array($this, 'l2i_restrict_action_callback'), 1);
+        
+        // Frontend script localization
+        add_action('wp_enqueue_scripts', array($this, 'l2i_enqueue_restriction_scripts'), 20);
     }
     
     /**
@@ -821,7 +833,182 @@ class L2I_Restrictions {
                 'upload_portfolio' => $this->check_portfolio_permission(true, $user_id),
                 'zoom_meetings' => get_userdata($user_id)->has_cap('zoom_meetings'),
                 'premium_features' => get_userdata($user_id)->has_cap('access_premium_features')
-            )
+            ),
+            'is_restricted_member' => $this->l2i_is_restricted_member($user_id)
         );
+    }
+    
+    /**
+     * Link2Investors: Check if user is on a restricted (free) tier
+     * Integrated from standalone Link2Investors Membership Restrictions plugin
+     * 
+     * @param int|null $user_id The ID of the user to check. Defaults to current user.
+     * @return bool True if the user is on a free/restricted tier, false otherwise.
+     */
+    public function l2i_is_restricted_member($user_id = null) {
+        if (empty($user_id)) {
+            $user_id = get_current_user_id();
+        }
+
+        if (empty($user_id)) {
+            return false; // Not logged in, not restricted.
+        }
+
+        // Use cached result if available to improve performance
+        $cache_key = 'l2i_restricted_member_' . $user_id;
+        $cached_result = wp_cache_get($cache_key, 'l2i_restrictions');
+        if ($cached_result !== false) {
+            return $cached_result;
+        }
+
+        // Check for essential page bypass
+        if ($this->l2i_is_essential_page()) {
+            wp_cache_set($cache_key, false, 'l2i_restrictions', 300); // Cache for 5 minutes
+            return false; // Not restricted on essential pages
+        }
+
+        $user_role = $this->l2i_get_user_primary_role($user_id);
+        $is_restricted = false;
+
+        // Dynamic restriction logic for investors
+        if ($user_role === 'investor') {
+            $is_restricted = $this->l2i_check_investor_restriction($user_id);
+        }
+        // Add other role checks here in the future
+        // elseif ($user_role === 'freelancer') {
+        //     $is_restricted = $this->l2i_check_freelancer_restriction($user_id);
+        // }
+
+        // Cache the result to improve performance
+        wp_cache_set($cache_key, $is_restricted, 'l2i_restrictions', 300); // Cache for 5 minutes
+        
+        return $is_restricted;
+    }
+    
+    /**
+     * Check if current page is an essential page that should bypass restrictions
+     */
+    private function l2i_is_essential_page() {
+        $current_url = home_url(add_query_arg(null, null));
+        $site_url = get_bloginfo("siteurl");
+        
+        $allowed_pages_patterns = array(
+            get_permalink(get_option("ProjectTheme_my_account_page_id")),
+            $site_url . '/entrepreneur-membership/',
+            $site_url . '/investor-membership/',
+            $site_url . '/?p_action=purchase_membership_display',
+            $site_url . '/?p_action=credits_listing_mem',
+            $site_url . '/?p_action=paypal_membership_mem',
+            $site_url . '/?p_action=get_new_mem',
+            // Add wallet pages for upgrades
+            get_permalink(get_option('l2i_wallet_deposit_page')),
+            get_permalink(get_option('l2i_wallet_dashboard_page'))
+        );
+        
+        foreach ($allowed_pages_patterns as $pattern) {
+            if (!empty($pattern) && strpos($current_url, $pattern) !== false) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Get user's primary role using optimized method
+     */
+    private function l2i_get_user_primary_role($user_id) {
+        // Use the theme's function if available
+        if (function_exists('ProjectTheme_mems_get_current_user_role')) {
+            return ProjectTheme_mems_get_current_user_role($user_id);
+        }
+        
+        // Fallback to WordPress method
+        $user_data = get_userdata($user_id);
+        if ($user_data && !empty($user_data->roles)) {
+            return array_shift($user_data->roles);
+        }
+        
+        return '';
+    }
+    
+    /**
+     * Check if investor user is on a restricted (free) plan
+     */
+    private function l2i_check_investor_restriction($user_id) {
+        $user_mem_type_name = get_user_meta($user_id, 'mem_type', true);
+
+        if (empty($user_mem_type_name)) {
+            return false; // User has no membership type, not restricted
+        }
+
+        // Check both monthly and yearly plans more efficiently
+        for ($i = 1; $i <= 6; $i++) {
+            // Check monthly investor plans
+            $monthly_plan_name = get_option("pt_investor_membership_name_" . $i);
+            if ($monthly_plan_name === $user_mem_type_name) {
+                $plan_cost = get_option("pt_investor_membership_cost_" . $i, 0);
+                return ((float)$plan_cost == 0);
+            }
+
+            // Check yearly investor plans
+            $yearly_plan_name = get_option("pt_investor_membership_name_yearly_" . $i);
+            if ($yearly_plan_name === $user_mem_type_name) {
+                $plan_cost = get_option("pt_investor_membership_cost_yearly_" . $i, 0);
+                return ((float)$plan_cost == 0);
+            }
+        }
+
+        return false; // Plan not found or not free
+    }
+    
+    /**
+     * Restrict bidding and posting for free tier users
+     * Integrated from Link2Investors plugin
+     */
+    public function l2i_restrict_bidding_and_posting($allowed) {
+        if ($this->l2i_is_restricted_member()) {
+            return false; // If restricted, not allowed
+        }
+        return $allowed; // Otherwise, respect the original allowance
+    }
+    
+    /**
+     * AJAX callback to restrict actions for free tier users
+     * Integrated from Link2Investors plugin
+     */
+    public function l2i_restrict_action_callback() {
+        if ($this->l2i_is_restricted_member()) {
+            wp_send_json_error(
+                __('Your current membership level does not allow this action. Please upgrade your plan.', 'l2i-membership'),
+                403
+            );
+            wp_die();
+        }
+    }
+    
+    /**
+     * Enqueue scripts to make restriction status available to frontend JavaScript
+     * Integrated from Link2Investors plugin
+     */
+    public function l2i_enqueue_restriction_scripts() {
+        if (is_user_logged_in()) {
+            // Check if pt-custom-script is enqueued, if not use jquery as fallback
+            $script_handle = wp_script_is('pt-custom-script', 'enqueued') ? 'pt-custom-script' : 'jquery';
+            
+            wp_localize_script($script_handle, 'l2i_restrictions_obj', array(
+                'is_restricted_member' => $this->l2i_is_restricted_member(get_current_user_id()),
+                'restriction_message'  => __('Your current membership level does not allow this action. Please upgrade your plan.', 'l2i-membership'),
+                'upgrade_url' => get_permalink(get_option("ProjectTheme_my_account_page_id"))
+            ));
+        }
+    }
+    
+    /**
+     * Clear restriction cache for user (useful after membership changes)
+     */
+    public function l2i_clear_restriction_cache($user_id) {
+        $cache_key = 'l2i_restricted_member_' . $user_id;
+        wp_cache_delete($cache_key, 'l2i_restrictions');
     }
 }

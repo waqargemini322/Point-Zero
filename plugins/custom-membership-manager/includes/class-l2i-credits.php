@@ -123,6 +123,10 @@ class L2I_Credits {
             // Trigger action for integrations
             do_action('l2i_credits_used', $user_id, $credit_type, $amount, $context);
             
+            // Clear restriction cache when credits change
+            $restrictions = L2I_Restrictions::get_instance();
+            $restrictions->l2i_clear_restriction_cache($user_id);
+            
             return true;
         }
         
@@ -142,6 +146,11 @@ class L2I_Credits {
         if ($result) {
             $this->log_credit_usage($user_id, $credit_type, $amount, $description, $context, 'added');
             do_action('l2i_credits_added', $user_id, $credit_type, $amount, $context);
+            
+            // Clear restriction cache when credits change (may affect membership status)
+            $restrictions = L2I_Restrictions::get_instance();
+            $restrictions->l2i_clear_restriction_cache($user_id);
+            
             return true;
         }
         
@@ -161,6 +170,11 @@ class L2I_Credits {
         if ($result) {
             $this->log_credit_usage($user_id, $credit_type, $amount, $description, $context, 'set');
             do_action('l2i_credits_set', $user_id, $credit_type, $amount, $context);
+            
+            // Clear restriction cache when credits change
+            $restrictions = L2I_Restrictions::get_instance();
+            $restrictions->l2i_clear_restriction_cache($user_id);
+            
             return true;
         }
         
